@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.paxos.server.grpc.proto";
+option java_outer_classname = "PaxosProto";
+
+package paxos;
+
+// Paxos gRPC Service
+service PaxosService {
+    // Prepare phase - proposer asks acceptors to promise
+    rpc Prepare(PrepareRequest) returns (PrepareResponse);
+    
+    // Accept phase - proposer asks acceptors to accept a value
+    rpc AcceptRequest(AcceptRequestMessage) returns (AcceptResponse);
+    
+    // Health check
+    rpc Ping(PingRequest) returns (PongResponse);
+}
+
+// Prepare Request
+message PrepareRequest {
+    int64 id = 1;
+}
+
+// Prepare Response - either a promise or ignore
+message PrepareResponse {
+    bool ignored = 1;
+    int64 promised_id = 2;
+}
+
+// Accept Request
+message AcceptRequestMessage {
+    int64 id = 1;
+    string value = 2;
+}
+
+// Accept Response - either accepted or ignored
+message AcceptResponse {
+    bool ignored = 1;
+    int64 accepted_id = 2;
+    string accepted_value = 3;
+}
+
+// Ping Request (empty)
+message PingRequest {
+}
+
+// Pong Response
+message PongResponse {
+    string message = 1;
+}
