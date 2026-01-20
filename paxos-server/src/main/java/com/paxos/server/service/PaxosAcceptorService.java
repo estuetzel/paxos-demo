@@ -18,6 +18,8 @@ import java.nio.file.Path;
 /**
  * Paxos Acceptor implementation.
  * Handles the acceptor role in the Paxos consensus protocol.
+ * Note that this class assumes that proposers are adhering to the
+ * paxos protocol and not sending invalid prepare or acceptRequest commands.
  */
 @Service
 public class PaxosAcceptorService {
@@ -105,8 +107,8 @@ public class PaxosAcceptorService {
         // TODO write state to file after prepare op in future version
         log.info("Server {} received prepare request with id: {}", serverId, proposalId);
         PromiseResponse ret = new PromiseResponse();
-        ret.setPromisedId(proposalId);
         if (proposalId > promisedId) {
+            ret.setPromisedId(proposalId);
             promisedId = proposalId;
             log.info("Server {} promising for id: {}", serverId, proposalId);
             // when promising proposalId, return previously highest acceptedId and value
@@ -115,6 +117,9 @@ public class PaxosAcceptorService {
                 ret.setAcceptedValue(acceptedValue);
             }
         } else {
+            if (promisedId >= 0) {
+                ret.setPromisedId(promisedId);
+            }
             log.info("Server {} ignoring prepare with id: {} (already promised: {})",
                     serverId, proposalId, promisedId);
             ret.setIgnored(true);
@@ -133,8 +138,8 @@ public class PaxosAcceptorService {
                 serverId, proposalId, value);
 
         if (proposalId >= promisedId) {
-            // possible bug -- acceptedValue cannot change for the same proposalId
-            // requires some smart/correct behavior by proposer
+            // this code assumes proposer adheres to protocol and does not send
+            // a different value for the same proposalId even though the code allows it
             promisedId = proposalId;
             acceptedId = proposalId;
             acceptedValue = value;
