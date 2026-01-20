@@ -118,7 +118,13 @@ public class PaxosAcceptorService {
             }
         } else {
             if (promisedId >= 0) {
+                // not required by paxos but its 'nice' to return
                 ret.setPromisedId(promisedId);
+            }
+            if (acceptedId >= 0) {
+                // not required by paxos but its 'nice' to return
+                ret.setAcceptedId(acceptedId);
+                ret.setAcceptedValue(acceptedValue);
             }
             log.info("Server {} ignoring prepare with id: {} (already promised: {})",
                     serverId, proposalId, promisedId);
