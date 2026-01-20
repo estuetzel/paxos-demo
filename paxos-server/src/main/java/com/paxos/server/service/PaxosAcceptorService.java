@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 /**
  * Paxos Acceptor implementation.
  * Handles the acceptor role in the Paxos consensus protocol.
@@ -31,37 +29,29 @@ public class PaxosAcceptorService {
     // Value associated with the accepted proposal
     private String acceptedValue = null;
 
-    // Lock for thread safety
-    private final ReentrantLock lock = new ReentrantLock();
-
     /**
      * Phase 1b: Prepare/Promise
      * If the proposal number is higher than any we've seen, promise not to accept
      * any proposal with a lower number.
      */
     public synchronized PromiseResponse prepare(long proposalId) {
-        lock.lock();
-        try {
-            log.info("Server {} received prepare request with id: {}", serverId, proposalId);
-            PromiseResponse ret = new PromiseResponse();
-            ret.setPromisedId(proposalId);
-            if (proposalId > promisedId) {
-                promisedId = proposalId;
-                log.info("Server {} promising for id: {}", serverId, proposalId);
-                // when promising proposalId, return previously highest acceptedId and value
-                if (acceptedId >= 0) {
-                    ret.setAcceptedId(acceptedId);
-                    ret.setAcceptedValue(acceptedValue);
-                }
-            } else {
-                log.info("Server {} ignoring prepare with id: {} (already promised: {})", 
-                        serverId, proposalId, promisedId);
-                ret.setIgnored(true);
+        log.info("Server {} received prepare request with id: {}", serverId, proposalId);
+        PromiseResponse ret = new PromiseResponse();
+        ret.setPromisedId(proposalId);
+        if (proposalId > promisedId) {
+            promisedId = proposalId;
+            log.info("Server {} promising for id: {}", serverId, proposalId);
+            // when promising proposalId, return previously highest acceptedId and value
+            if (acceptedId >= 0) {
+                ret.setAcceptedId(acceptedId);
+                ret.setAcceptedValue(acceptedValue);
             }
-            return ret;
-        } finally {
-            lock.unlock();
+        } else {
+            log.info("Server {} ignoring prepare with id: {} (already promised: {})",
+                    serverId, proposalId, promisedId);
+            ret.setIgnored(true);
         }
+        return ret;
     }
 
     /**
@@ -70,26 +60,21 @@ public class PaxosAcceptorService {
      * accept the proposal.
      */
     public synchronized AcceptResponse acceptRequest(long proposalId, String value) {
-        lock.lock();
-        try {
-            log.info("Server {} received accept request with id: {}, value: {}", 
-                    serverId, proposalId, value);
-            
-            if (proposalId >= promisedId) {
-                // possible bug -- acceptedValue cannot change for the same proposalId
-                // requires some smart/correct behavior by proposer
-                promisedId = proposalId;
-                acceptedId = proposalId;
-                acceptedValue = value;
-                log.info("Server {} accepted id: {}, value: {}", serverId, proposalId, value);
-                return AcceptResponse.accept(acceptedId, acceptedValue);
-            } else {
-                log.info("Server {} ignoring accept with id: {} (promised: {})", 
-                        serverId, proposalId, promisedId);
-                return AcceptResponse.ignore();
-            }
-        } finally {
-            lock.unlock();
+        log.info("Server {} received accept request with id: {}, value: {}",
+                serverId, proposalId, value);
+
+        if (proposalId >= promisedId) {
+            // possible bug -- acceptedValue cannot change for the same proposalId
+            // requires some smart/correct behavior by proposer
+            promisedId = proposalId;
+            acceptedId = proposalId;
+            acceptedValue = value;
+            log.info("Server {} accepted id: {}, value: {}", serverId, proposalId, value);
+            return AcceptResponse.accept(acceptedId, acceptedValue);
+        } else {
+            log.info("Server {} ignoring accept with id: {} (promised: {})",
+                    serverId, proposalId, promisedId);
+            return AcceptResponse.ignore();
         }
     }
 
@@ -97,8 +82,7 @@ public class PaxosAcceptorService {
         return serverId;
     }
 
-    public PaxosState getState() {
-        // TODO use lock
+    public synchronized PaxosState getState() {
         return new PaxosState(promisedId, acceptedId, acceptedValue);
     }
 }
