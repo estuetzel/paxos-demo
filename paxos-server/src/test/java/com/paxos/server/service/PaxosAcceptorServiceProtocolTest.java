@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * As an expert in the paxos protocol, do you see any missing test acceptor cases in
  * @paxos-server/src/test/java/com/paxos/server/service/PaxosAcceptorServiceTest.java
  */
-class PaxosAcceptorServiceTest {
+class PaxosAcceptorServiceProtocolTest {
 
     private PaxosAcceptorService svc;
 
