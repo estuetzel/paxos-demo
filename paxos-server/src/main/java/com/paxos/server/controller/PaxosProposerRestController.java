@@ -47,14 +47,12 @@ public class PaxosProposerRestController {
      * Acceptor responds with accept(n, v) or ignore
      */
     @PostMapping("/accept")
-    public ResponseEntity<AcceptResponse> acceptRequest(
+    public ResponseEntity<Map<Integer, AcceptResponse>> acceptRequest(
             @RequestParam int id,
             @RequestParam String value) {
         log.info("REST: Received accept request with id: {}, value: {}", id, value);
-        // TODO forward to other servers in pool
-//        AcceptResponse response = acceptorService.acceptRequest(id, value);
-//        return ResponseEntity.ok(response);
-        return null;
+        Map<Integer, AcceptResponse> responses = acceptorService.acceptRequest(id, value);
+        return ResponseEntity.ok(responses);
     }
 
     /**

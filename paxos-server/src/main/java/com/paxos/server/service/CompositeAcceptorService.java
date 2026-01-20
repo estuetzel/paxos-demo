@@ -81,7 +81,7 @@ public class CompositeAcceptorService {
      * Combined paxos accept operation for this host and remote hosts in consensus pool.
      * Return a map of server id to accept responses.
      */
-    public Map<Integer, AcceptResponse> accept(long proposalId, String value) {
+    public Map<Integer, AcceptResponse> acceptRequest(long proposalId, String value) {
 
         Map<Integer, AcceptResponse> ret = new HashMap<>();
         List<Integer> serversIgnored = new ArrayList<>();

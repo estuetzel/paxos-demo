@@ -22,6 +22,7 @@ import java.util.Map;
 /**
  * Paxos forwarding service.
  * Sends prepare/accept request to other participants in consensus pool
+ * TODO consider stopping prepare/accept requests once quorum is reached
  */
 @Service
 public class PaxosForwardingService {
