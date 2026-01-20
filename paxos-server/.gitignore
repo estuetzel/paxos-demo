@@ -1,3 +1,6 @@
+# data dir
+data
+
 # Maven
 target/
 pom.xml.tag

@@ -16,6 +16,11 @@ if [ -z "$2" ]; then
     exit 1
 fi
 
+if [ -z "$PAXOS_DATA_DIR" ]; then
+    echo "env var PAXOS_DATA_DIR is required"
+    exit 1
+fi
+
 SERVER_ID=$1
 NUM_SERVERS=$2
 
@@ -43,5 +48,6 @@ fi
 java -jar target/paxos-server-1.0.0-SNAPSHOT.jar \
     --paxos.server.id=${SERVER_ID} \
     --paxos.server.count=${NUM_SERVERS} \
+    --paxos.server.data.dir=${PAXOS_DATA_DIR} \
     --server.port=${HTTP_PORT} \
     --grpc.server.port=${GRPC_PORT}
