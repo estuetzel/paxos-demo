@@ -6,14 +6,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class PromiseResponse {
     
     private boolean ignored;
-    private Long id;
+    private Long acceptedId;
+    private String acceptedValue;
+
     
     public PromiseResponse() {}
-    
-    public PromiseResponse(boolean ignored, Long id) {
-        this.ignored = ignored;
-        this.id = id;
-    }
     
     public boolean isIgnored() {
         return ignored;
@@ -23,12 +20,20 @@ public class PromiseResponse {
         this.ignored = ignored;
     }
     
-    public Long getId() {
-        return id;
+    public Long getAcceptedId() {
+        return acceptedId;
     }
-    
-    public void setId(Long id) {
-        this.id = id;
+
+    public String getAcceptedValue() {
+        return acceptedValue;
+    }
+
+    public void setAcceptedValue(String acceptedValue) {
+        this.acceptedValue = acceptedValue;
+    }
+
+    public void setAcceptedId(long acceptedId) {
+        this.acceptedId = acceptedId;
     }
 
 }

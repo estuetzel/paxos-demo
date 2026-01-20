@@ -30,7 +30,8 @@ public class PaxosGrpcService extends PaxosServiceGrpc.PaxosServiceImplBase {
                 .setIgnored(result.isIgnored());
         
         if (!result.isIgnored()) {
-            responseBuilder.setPromisedId(result.getId());
+            responseBuilder.setAcceptedId(result.getAcceptedId());
+            responseBuilder.setAcceptedValue(result.getAcceptedValue());
         }
         
         responseObserver.onNext(responseBuilder.build());

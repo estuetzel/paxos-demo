@@ -26,7 +26,10 @@ message PrepareRequest {
 // Prepare Response - either a promise or ignore
 message PrepareResponse {
     bool ignored = 1;
-    int64 promised_id = 2;
+    // If acceptor has already accepted a value, include it
+    bool has_accepted_value = 3;
+    int64 accepted_id = 4;
+    string accepted_value = 5;
 }
 
 // Accept Request

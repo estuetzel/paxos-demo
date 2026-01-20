@@ -48,7 +48,11 @@ public class PaxosAcceptorService {
             if (proposalId > promisedId) {
                 promisedId = proposalId;
                 log.info("Server {} promising for id: {}", serverId, proposalId);
-                ret.setId(promisedId);
+                // when promising proposalId, return previously highest acceptedId and value
+                if (acceptedId >= 0) {
+                    ret.setAcceptedId(acceptedId);
+                    ret.setAcceptedValue(acceptedValue);
+                }
             } else {
                 log.info("Server {} ignoring prepare with id: {} (already promised: {})", 
                         serverId, proposalId, promisedId);
