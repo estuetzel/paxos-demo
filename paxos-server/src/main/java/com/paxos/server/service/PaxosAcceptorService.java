@@ -1,12 +1,11 @@
 package com.paxos.server.service;
 
 import com.paxos.server.model.AcceptResponse;
+import com.paxos.server.model.PaxosState;
 import com.paxos.server.model.PromiseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -31,7 +30,7 @@ public class PaxosAcceptorService {
     
     // Value associated with the accepted proposal
     private String acceptedValue = null;
-    
+
     // Lock for thread safety
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -40,11 +39,12 @@ public class PaxosAcceptorService {
      * If the proposal number is higher than any we've seen, promise not to accept
      * any proposal with a lower number.
      */
-    public PromiseResponse prepare(long proposalId) {
+    public synchronized PromiseResponse prepare(long proposalId) {
         lock.lock();
         try {
             log.info("Server {} received prepare request with id: {}", serverId, proposalId);
             PromiseResponse ret = new PromiseResponse();
+            ret.setPromisedId(proposalId);
             if (proposalId > promisedId) {
                 promisedId = proposalId;
                 log.info("Server {} promising for id: {}", serverId, proposalId);
@@ -69,13 +69,15 @@ public class PaxosAcceptorService {
      * If the proposal number is at least as high as any we've promised,
      * accept the proposal.
      */
-    public AcceptResponse acceptRequest(long proposalId, String value) {
+    public synchronized AcceptResponse acceptRequest(long proposalId, String value) {
         lock.lock();
         try {
             log.info("Server {} received accept request with id: {}, value: {}", 
                     serverId, proposalId, value);
             
             if (proposalId >= promisedId) {
+                // possible bug -- acceptedValue cannot change for the same proposalId
+                // requires some smart/correct behavior by proposer
                 promisedId = proposalId;
                 acceptedId = proposalId;
                 acceptedValue = value;
@@ -95,11 +97,8 @@ public class PaxosAcceptorService {
         return serverId;
     }
 
-    public Long getPromiseId() {
-        return promisedId;
-    }
-
-    public Long getAcceptId() {
-        return acceptedId;
+    public PaxosState getState() {
+        // TODO use lock
+        return new PaxosState(promisedId, acceptedId, acceptedValue);
     }
 }

@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 option java_multiple_files = true;
 option java_package = "com.paxos.server.grpc.proto";
 option java_outer_classname = "PaxosProto";
@@ -13,6 +15,9 @@ service PaxosService {
     
     // Accept phase - proposer asks acceptors to accept a value
     rpc AcceptRequest(AcceptRequestMessage) returns (AcceptResponse);
+
+    // Get paxos state of server (meta operation)
+    rpc State(google.protobuf.Empty) returns (StateResponse);
     
     // Health check
     rpc Ping(PingRequest) returns (PongResponse);
@@ -26,6 +31,7 @@ message PrepareRequest {
 // Prepare Response - either a promise or ignore
 message PrepareResponse {
     bool ignored = 1;
+    int64 promised_id = 2;
     // If acceptor has already accepted a value, include it
     bool has_accepted_value = 3;
     int64 accepted_id = 4;
@@ -43,6 +49,13 @@ message AcceptResponse {
     bool ignored = 1;
     int64 accepted_id = 2;
     string accepted_value = 3;
+}
+
+// State Response
+message StateResponse {
+    int64 promised_id = 1;
+    int64 accepted_id = 2;
+    optional string accepted_value = 3;
 }
 
 // Ping Request (empty)

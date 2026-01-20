@@ -1,7 +1,9 @@
 package com.paxos.server.grpc;
 
+import com.google.protobuf.Empty;
 import com.paxos.server.grpc.proto.*;
 import com.paxos.server.model.AcceptResponse;
+import com.paxos.server.model.PaxosState;
 import com.paxos.server.model.PromiseResponse;
 import com.paxos.server.service.PaxosAcceptorService;
 import io.grpc.stub.StreamObserver;
@@ -27,13 +29,16 @@ public class PaxosGrpcService extends PaxosServiceGrpc.PaxosServiceImplBase {
         PromiseResponse result = acceptorService.prepare(request.getId());
         
         PrepareResponse.Builder responseBuilder = PrepareResponse.newBuilder()
-                .setIgnored(result.isIgnored());
+                .setIgnored(result.isIgnored())
+                .setPromisedId(result.getPromisedId());
         
         if (!result.isIgnored()) {
-            responseBuilder.setAcceptedId(result.getAcceptedId());
-            responseBuilder.setAcceptedValue(result.getAcceptedValue());
+            if (result.getAcceptedId() != null) {
+                responseBuilder.setAcceptedId(result.getAcceptedId());
+                responseBuilder.setAcceptedValue(result.getAcceptedValue());
+            }
         }
-        
+        log.debug("resp accepted grpc: has={}, val={}", responseBuilder.getHasAcceptedValue(), responseBuilder.getAcceptedValue());
         responseObserver.onNext(responseBuilder.build());
         responseObserver.onCompleted();
     }
@@ -55,6 +60,24 @@ public class PaxosGrpcService extends PaxosServiceGrpc.PaxosServiceImplBase {
         }
         
         responseObserver.onNext(responseBuilder.build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void state(Empty request, StreamObserver<StateResponse> responseObserver) {
+        PaxosState state = acceptorService.getState();
+
+        StateResponse.Builder builder = StateResponse.newBuilder()
+                .setPromisedId(state.getPromisedId())
+                .setAcceptedId(state.getAcceptedId());
+
+        if (state.getAcceptedValue() != null) {
+            builder.setAcceptedValue(state.getAcceptedValue());
+        }
+
+        StateResponse resp = builder.build();
+
+        responseObserver.onNext(resp);
         responseObserver.onCompleted();
     }
 

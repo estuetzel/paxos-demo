@@ -5,12 +5,19 @@
 # Example: ./run-server.sh 1
 
 if [ -z "$1" ]; then
-    echo "Usage: $0 <serverID>"
-    echo "Example: $0 1"
+    echo "Usage: $0 <serverID> <numServers>"
+    echo "Example: $0 1 3"
+    exit 1
+fi
+# TODO make this validation more concise
+if [ -z "$2" ]; then
+    echo "Usage: $0 <serverID> <numServers>"
+    echo "Example: $0 1 3"
     exit 1
 fi
 
 SERVER_ID=$1
+NUM_SERVERS=$2
 
 # Calculate ports based on server ID
 # HTTP port: 8080 + serverID
@@ -35,5 +42,6 @@ fi
 # Run the server
 java -jar target/paxos-server-1.0.0-SNAPSHOT.jar \
     --paxos.server.id=${SERVER_ID} \
+    --paxos.server.count=${NUM_SERVERS} \
     --server.port=${HTTP_PORT} \
     --grpc.server.port=${GRPC_PORT}

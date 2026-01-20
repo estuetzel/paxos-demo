@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for paxos operations on this host.
+ */
 @RestController
 @RequestMapping("/api/paxos")
 public class PaxosRestController {
@@ -23,26 +26,14 @@ public class PaxosRestController {
 
     /**
      * Phase 1: Prepare endpoint
-     * Proposer sends prepare(n) to acceptors
+     * Proposer sends prepare(n) to acceptor
      * Acceptor responds with promise(n) or ignore
      */
     @PostMapping("/prepare")
     public ResponseEntity<PromiseResponse> prepare(@RequestParam int id) {
         log.info("REST: Received prepare request with id: {}", id);
-        // TODO forward to other servers in pool
         PromiseResponse response = acceptorService.prepare(id);
         return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Endpoint for getting paxos state
-     */
-    @GetMapping("/state")
-    public ResponseEntity<PaxosState> state() {
-        log.info("REST: Received state request");
-        long acceptedId = acceptorService.getAcceptId();
-        long promisedId = acceptorService.getPromiseId();
-        return ResponseEntity.ok(new PaxosState(acceptedId, promisedId));
     }
 
     /**
@@ -55,16 +46,17 @@ public class PaxosRestController {
             @RequestParam int id,
             @RequestParam String value) {
         log.info("REST: Received accept request with id: {}, value: {}", id, value);
-        // TODO forward to other servers in pool
         AcceptResponse response = acceptorService.acceptRequest(id, value);
         return ResponseEntity.ok(response);
     }
 
     /**
-     * Health check endpoint
+     * Endpoint for getting paxos state
      */
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Server " + acceptorService.getServerId() + " is healthy");
+    @GetMapping("/state")
+    public ResponseEntity<PaxosState> state() {
+        log.info("REST: Received state request");
+        PaxosState state = acceptorService.getState();
+        return ResponseEntity.ok(state);
     }
 }
