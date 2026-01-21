@@ -31,7 +31,7 @@ public class CompositeAcceptorService {
     private int serverCount;
 
     @Autowired
-    private PaxosAcceptorService internalService;
+    private PersistentPaxosAcceptorService internalService;
 
     @Autowired
     private PaxosForwardingService remoteService;

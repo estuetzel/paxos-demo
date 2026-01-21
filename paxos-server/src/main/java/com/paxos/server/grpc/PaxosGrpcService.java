@@ -6,19 +6,24 @@ import com.paxos.server.model.AcceptResponse;
 import com.paxos.server.model.PaxosState;
 import com.paxos.server.model.PromiseResponse;
 import com.paxos.server.service.PaxosAcceptorService;
+import com.paxos.server.service.PersistentPaxosAcceptorService;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 @GrpcService
 public class PaxosGrpcService extends PaxosServiceGrpc.PaxosServiceImplBase {
 
     private static final Logger log = LoggerFactory.getLogger(PaxosGrpcService.class);
 
-    private final PaxosAcceptorService acceptorService;
+    @Value("${paxos.server.id:0}")
+    private int serverId;
 
-    public PaxosGrpcService(PaxosAcceptorService acceptorService) {
+    private final PersistentPaxosAcceptorService acceptorService;
+
+    public PaxosGrpcService(PersistentPaxosAcceptorService acceptorService) {
         this.acceptorService = acceptorService;
     }
 
@@ -86,7 +91,7 @@ public class PaxosGrpcService extends PaxosServiceGrpc.PaxosServiceImplBase {
         log.info("gRPC: Received ping request");
         
         PongResponse response = PongResponse.newBuilder()
-                .setMessage("pong from server " + acceptorService.getServerId())
+                .setMessage("pong from server " + serverId)
                 .build();
         
         responseObserver.onNext(response);

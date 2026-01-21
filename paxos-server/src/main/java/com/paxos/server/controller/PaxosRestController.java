@@ -3,7 +3,7 @@ package com.paxos.server.controller;
 import com.paxos.server.model.AcceptResponse;
 import com.paxos.server.model.PaxosState;
 import com.paxos.server.model.PromiseResponse;
-import com.paxos.server.service.PaxosAcceptorService;
+import com.paxos.server.service.PersistentPaxosAcceptorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +18,9 @@ public class PaxosRestController {
 
     private static final Logger log = LoggerFactory.getLogger(PaxosRestController.class);
 
-    private final PaxosAcceptorService acceptorService;
+    private final PersistentPaxosAcceptorService acceptorService;
 
-    public PaxosRestController(PaxosAcceptorService acceptorService) {
+    public PaxosRestController(PersistentPaxosAcceptorService acceptorService) {
         this.acceptorService = acceptorService;
     }
 
