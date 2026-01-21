@@ -4,15 +4,15 @@ written for an interview exercise.
 
 There are two subprojects
 
-### paxos-server
+### [paxos-server](paxos-server/README.md)
 A Java Spring Boot implementation of Paxos Acceptor role.
-* The Acceptor has a simple http REST interface
+* The acceptor has a simple http REST interface
 * It also contains some supplemental behavior for the purpose of
 demonstrating distributed system knowledge. 
 
-### paxos-client
+### [paxos-client](paxos-client/README.md)
 
-Various scripts for Paxos Proposer Role functionality. The proposer
+Various python scripts for Paxos Proposer Role functionality. The proposer
 role involves
 * adhering to the Paxos proposer protocol
-* sending requests to a majority (usually) ofAcceptors and interpreting the responses
+* sending requests to a majority (usually) of acceptors and interpreting the responses
