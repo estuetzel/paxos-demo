@@ -41,7 +41,6 @@ public class PaxosAcceptorService {
      * any proposal with a lower number.
      */
     public synchronized PromiseResponse prepare(long proposalId) {
-        // TODO write state to file after prepare op in future version
         log.info("Received prepare request with id: {}", proposalId);
         PromiseResponse ret = new PromiseResponse();
         if (proposalId > promisedId) {
@@ -76,7 +75,6 @@ public class PaxosAcceptorService {
      * accept the proposal.
      */
     public synchronized AcceptResponse acceptRequest(long proposalId, String value) {
-        // TODO write state to file after accept op in future version
         log.info("Received accept request with id: {}, value: {}",
                 proposalId, value);
 
