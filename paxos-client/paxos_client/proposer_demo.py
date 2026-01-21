@@ -22,6 +22,9 @@ def main():
 
     args = parser.parse_args()
 
+    # Technically a proposer should stop if it can't contact a majority,
+    # but doing so does not break anything and helps to demonstrate how the protocol
+    # behaves when servers cannot be contacts
     server_ids = list(range(1, args.server_count + 1))
     contacted = random.sample(
         server_ids, min(args.contact_count, len(server_ids))

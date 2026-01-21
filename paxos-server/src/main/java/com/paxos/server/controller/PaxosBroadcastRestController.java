@@ -20,14 +20,14 @@ import java.util.Map;
  * an interview exercise.
  */
 @RestController
-@RequestMapping("/api/proposer/paxos")
-public class PaxosProposerRestController {
+@RequestMapping("/api/broadcast/paxos")
+public class PaxosBroadcastRestController {
 
-    private static final Logger log = LoggerFactory.getLogger(PaxosProposerRestController.class);
+    private static final Logger log = LoggerFactory.getLogger(PaxosBroadcastRestController.class);
 
     private final CompositeAcceptorService acceptorService;
 
-    public PaxosProposerRestController(CompositeAcceptorService acceptorService) {
+    public PaxosBroadcastRestController(CompositeAcceptorService acceptorService) {
         this.acceptorService = acceptorService;
     }
 

@@ -107,7 +107,7 @@ public class MultiServerIntegrationTest {
             // by hitting the proposer controller
             ResponseEntity<Map<Integer, PaxosState>> resp =
                     httpTemplate.exchange(
-                            String.format("%s/api/proposer/paxos/state", contexts.get(0).baseUrl),
+                            String.format("%s/api/broadcast/paxos/state", contexts.get(0).baseUrl),
                             HttpMethod.GET,
                             null,
                             new ParameterizedTypeReference<Map<Integer, PaxosState>>() {}

@@ -1,18 +1,11 @@
 #!/bin/bash
 
 # Paxos Server Launch Script
-# Usage: ./run-server.sh <serverID>
-# Example: ./run-server.sh 1
 
-if [ -z "$1" ]; then
-    echo "Usage: $0 <serverID> <numServers>"
-    echo "Example: $0 1 3"
-    exit 1
-fi
-# TODO make this validation more concise
-if [ -z "$2" ]; then
-    echo "Usage: $0 <serverID> <numServers>"
-    echo "Example: $0 1 3"
+if [ $# -ne 2 ]; then
+    echo "Error: Expected 2 arguments, got $#" >&2
+    echo "Usage: $0 <serverID> <numServers>" >&2
+    echo "Example: $0 1 3" >&2
     exit 1
 fi
 

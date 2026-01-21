@@ -6,7 +6,9 @@ User must be aware of how many servers are in the acceptor pool to use most of
 these scripts
 
 ## setup
-User must have already launched one or more acceptors in the paxos-server project
+User must have already launched one or more acceptors in the paxos-server project.
+User can bring acceptors up and down as wanted to introduce downed-node
+behavior.
 ```commandline
 python -m venv .venv 
 source .venv/bin/activate 
