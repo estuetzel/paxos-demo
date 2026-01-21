@@ -75,6 +75,9 @@ what consensus value has been reached, if any.
 You can use the contact count to play around with different majority or minority 
 acceptor server contacts to understand how Paxos behaves. A random set of acceptors
 are chosen each time contact_count is less than the pool size.
+
+The previous send-accept and send-prepare scripts can be used to manipulate
+the state of the system before running this consensus demo script.
 ```commandline
 python paxos_client/proposer_demo.py --help
 usage: proposer_demo.py [-h] --server-count SERVER_COUNT --id ID --contact-count CONTACT_COUNT --value VALUE

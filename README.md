@@ -2,7 +2,11 @@
 This project contains an implementation of Simple Paxos Protocol,
 written for an interview exercise.
 
-There are two subprojects
+This implementation is based on reviewing the following sources:
+* https://en.wikipedia.org/wiki/Paxos_(computer_science)
+* [Google Youtube Paxos Presentation](https://www.youtube.com/watch?v=d7nAGI_NZPk)
+
+There are two subprojects.
 
 ### [paxos-server](paxos-server/README.md)
 A Java Spring Boot implementation of Paxos Acceptor role.
