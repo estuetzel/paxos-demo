@@ -22,6 +22,7 @@ import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.paxos.server.integration.TestUtils.findAvailablePort;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,15 +49,6 @@ public class PaxosControllerTest {
         registry.add("paxos.server.data.dir", () -> tempDir.toString());
         registry.add("paxos.server.id", () -> "1");
         registry.add("grpc.server.port", () -> grpcPort);
-    }
-
-    private static int findAvailablePort() {
-        try (ServerSocket socket = new ServerSocket(0)) {
-            socket.setReuseAddress(true);
-            return socket.getLocalPort();
-        } catch (IOException e) {
-            throw new RuntimeException("Could not find available port", e);
-        }
     }
 
     @AfterEach

@@ -14,7 +14,10 @@ import java.util.Map;
 /**
  * Controller for broadcasting prepare/send operations
  * to other nodes in the pool. In paxos, this is the responsibility of
- * proposer, not acceptor.
+ * proposer, not acceptor. This controller is largely here just for
+ * convenience (to send one request to all nodes in the pool) and for the
+ * purpose of demonstrating grpc inter-node communication as this is
+ * an interview exercise.
  */
 @RestController
 @RequestMapping("/api/proposer/paxos")

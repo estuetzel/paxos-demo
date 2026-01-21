@@ -21,12 +21,15 @@ import java.util.Map;
 @Service
 public class GrpcChannelProvider implements SmartInitializingSingleton {
 
-    private static final int BASE_GRPC_PORT = 9090;
+
 
     private static final Logger log = LoggerFactory.getLogger(GrpcChannelProvider.class);
 
     @Value("${paxos.server.id:0}")
     private int serverId;
+
+    @Value("${paxos.server.grpc.base.port:9090}")
+    private int baseGrpcPort;
 
     @Value("${paxos.server.count}")
     private int serverCount;
@@ -39,7 +42,7 @@ public class GrpcChannelProvider implements SmartInitializingSingleton {
             if (i == serverId) {
                 continue;
             }
-            int grpcPort = BASE_GRPC_PORT + i;
+            int grpcPort = baseGrpcPort + i;
             ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", grpcPort)
                     .usePlaintext()
                     .build();
